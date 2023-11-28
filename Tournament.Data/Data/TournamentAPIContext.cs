@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Core.Entities;
 
-namespace Tournament.API.Data
+namespace Tournament.API.Data.Data
 {
     public class TournamentAPIContext : DbContext
     {

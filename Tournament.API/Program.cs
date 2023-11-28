@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Tournament.API.Data;
+using Tournament.API.Data.Data;
 
 namespace Tournament.API
 {

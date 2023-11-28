@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Entities
 {
-    public class Tournament
+    public class Tournaments
     {
 
         // KEY

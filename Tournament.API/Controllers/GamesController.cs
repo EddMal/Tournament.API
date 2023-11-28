@@ -10,49 +10,49 @@ using Tournament.Core.Entities;
 
 namespace Tournament.API.Controllers
 {
-    [Route("api/Tornaments")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class TournamentsController : ControllerBase
+    public class GamesController : ControllerBase
     {
         private readonly TournamentAPIContext _context;
 
-        public TournamentsController(TournamentAPIContext context)
+        public GamesController(TournamentAPIContext context)
         {
             _context = context;
         }
 
-        // GET: api/Tournaments
+        // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournaments>>> GetTournament()
+        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
         {
-            return await _context.Tournament.ToListAsync();
+            return await _context.Game.ToListAsync();
         }
 
-        // GET: api/Tournaments/5
+        // GET: api/Games/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tournaments>> GetTournament(Guid id)
+        public async Task<ActionResult<Game>> GetGame(Guid id)
         {
-            var tournament = await _context.Tournament.FindAsync(id);
+            var game = await _context.Game.FindAsync(id);
 
-            if (tournament == null)
+            if (game == null)
             {
                 return NotFound();
             }
 
-            return tournament;
+            return game;
         }
 
-        // PUT: api/Tournaments/5
+        // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournament(Guid id, Tournaments tournament)
+        public async Task<IActionResult> PutGame(Guid id, Game game)
         {
-            if (id != tournament.Id)
+            if (id != game.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(tournament).State = EntityState.Modified;
+            _context.Entry(game).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Tournament.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TournamentExists(id))
+                if (!GameExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace Tournament.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Tournaments
+        // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournaments>> PostTournament(Tournaments tournament)
+        public async Task<ActionResult<Game>> PostGame(Game game)
         {
-            _context.Tournament.Add(tournament);
+            _context.Game.Add(game);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
+            return CreatedAtAction("GetGame", new { id = game.Id }, game);
         }
 
-        // DELETE: api/Tournaments/5
+        // DELETE: api/Games/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTournament(Guid id)
+        public async Task<IActionResult> DeleteGame(Guid id)
         {
-            var tournament = await _context.Tournament.FindAsync(id);
-            if (tournament == null)
+            var game = await _context.Game.FindAsync(id);
+            if (game == null)
             {
                 return NotFound();
             }
 
-            _context.Tournament.Remove(tournament);
+            _context.Game.Remove(game);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool TournamentExists(Guid id)
+        private bool GameExists(Guid id)
         {
-            return _context.Tournament.Any(e => e.Id == id);
+            return _context.Game.Any(e => e.Id == id);
         }
     }
 }

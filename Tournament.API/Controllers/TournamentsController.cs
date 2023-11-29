@@ -23,14 +23,14 @@ namespace Tournament.API.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournaments>>> GetTournament()
+        public async Task<ActionResult<IEnumerable<Core.Entities.Tournament>>> GetTournament()
         {
             return await _context.Tournament.ToListAsync();
         }
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tournaments>> GetTournament(Guid id)
+        public async Task<ActionResult<Core.Entities.Tournament>> GetTournament(Guid id)
         {
             var tournament = await _context.Tournament.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace Tournament.API.Controllers
         // PUT: api/Tournaments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournament(Guid id, Tournaments tournament)
+        public async Task<IActionResult> PutTournament(Guid id, Core.Entities.Tournament tournament)
         {
             if (id != tournament.Id)
             {
@@ -76,7 +76,7 @@ namespace Tournament.API.Controllers
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournaments>> PostTournament(Tournaments tournament)
+        public async Task<ActionResult<Core.Entities.Tournament>> PostTournament(Core.Entities.Tournament tournament)
         {
             _context.Tournament.Add(tournament);
             await _context.SaveChangesAsync();

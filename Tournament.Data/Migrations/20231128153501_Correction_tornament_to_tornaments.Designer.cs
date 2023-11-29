@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.API.Data.Data;
 
@@ -11,9 +12,11 @@ using Tournament.API.Data.Data;
 namespace Tournament.Data.Migrations
 {
     [DbContext(typeof(TournamentAPIContext))]
-    partial class TournamentAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20231128153501_Correction_tornament_to_tornaments")]
+    partial class Correction_tornament_to_tornaments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,7 @@ namespace Tournament.Data.Migrations
 
                     b.HasIndex("TournamentId1");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Game");
                 });
 
             modelBuilder.Entity("Tournament.Core.Entities.Tournament", b =>
@@ -59,7 +62,7 @@ namespace Tournament.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournaments", (string)null);
+                    b.ToTable("Tournament");
                 });
 
             modelBuilder.Entity("Tournament.Core.Entities.Game", b =>

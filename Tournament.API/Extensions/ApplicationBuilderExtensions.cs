@@ -2,9 +2,9 @@
 {
     public static class ApplicationBuilderExtensions
     {
-        public async void SeedDataAsync()
-        {
+        //public async void SeedDataAsync()
+        //{
 
-        }
+        //}
     }
 }

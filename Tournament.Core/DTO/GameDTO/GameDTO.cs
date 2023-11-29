@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tournament.Core.Entities
+namespace Tournament.Core.DTO.GameDTO
 {
-    public class Game
+    public class GameDTO
     {
-        // KEY
-        public Guid Id { get; set; }
-    
         // Add attribute.
         public string Title { get; set; } = string.Empty;
 
@@ -20,9 +17,5 @@ namespace Tournament.Core.Entities
         //Foreign key
         public Guid TournamentId;
 
-        //Navigation property
-        public Tournament Tournament { get; set; } = new Tournament();
-
     }
- 
 }

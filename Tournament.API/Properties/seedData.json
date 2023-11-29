@@ -1,0 +1,19 @@
+{
+  "SeedData": {
+    "Games": [
+      { "Name": "Pool" },
+      { "Name": "Table-Tennis" },
+      { "Name": "Soccer" },
+      { "Name": "Chess" }
+    ],
+
+    "Tournaments": [
+      { "Name": "Jojjes-Masters" },
+      { "Name": "Kickis-Gold" },
+      { "Name": "Mango-Mangold" },
+      { "Name": "Diamant-League" }
+    ]
+  }
+
+
+}

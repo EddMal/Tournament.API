@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Runtime.CompilerServices;
 using Tournament.API.Data.Data;
+using Tournament.API.Extensions;
 using Tournament.API.Services;
 using Tournament.Core.DTO.SeedDTO;
 using static Tournament.Core.DTO.SeedDTO.SeedDTO;
@@ -10,11 +12,11 @@ namespace Tournament.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task  Main(string[] args)
         {
             IConfiguration seedConfig = new ConfigurationBuilder()
                         .SetBasePath(Environment.CurrentDirectory)
-                        .AddJsonFile("seedData.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile("Properties/seedData.json", optional: false, reloadOnChange: true)
                         .Build();
 
             var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +32,6 @@ namespace Tournament.API
             builder.Services.AddSingleton<SeedData>(seedConfig.GetSection("SeedData").Get<SeedData>()!);
             builder.Services.Configure<SeedData>(seedConfig.GetSection("SeedData").Bind);
 
-            builder.Services.AddSingleton<IConfiguration>(seedConfig);
 
             builder.Services.AddScoped<ISeedService, SeedService>();
 
@@ -45,8 +46,9 @@ namespace Tournament.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                
+                await app.SeedStartupData();
             }
+
 
             app.UseHttpsRedirection();
 

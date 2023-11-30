@@ -18,10 +18,10 @@ namespace Tournament.Core.Entities
         public DateTime Time { get; set; }
 
         //Foreign key
-        public Guid TournamentId;
+        public Guid TournamentId { get; set; }
 
         //Navigation property
-        public Tournament Tournament { get; set; } = new Tournament();
+        public Tournament Tournament { get; set; } //= new Tournament();
 
     }
  

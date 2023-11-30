@@ -12,8 +12,8 @@ using Tournament.API.Data.Data;
 namespace Tournament.Data.Migrations
 {
     [DbContext(typeof(TournamentAPIContext))]
-    [Migration("20231128155835_Correction_tornament_to_tornaments_3")]
-    partial class Correction_tornament_to_tornaments_3
+    [Migration("20231130161624_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,12 +38,12 @@ namespace Tournament.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TournamentId1")
+                    b.Property<Guid>("TournamentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TournamentId1");
+                    b.HasIndex("TournamentId");
 
                     b.ToTable("Games", (string)null);
                 });
@@ -68,12 +68,17 @@ namespace Tournament.Data.Migrations
             modelBuilder.Entity("Tournament.Core.Entities.Game", b =>
                 {
                     b.HasOne("Tournament.Core.Entities.Tournament", "Tournament")
-                        .WithMany()
-                        .HasForeignKey("TournamentId1")
+                        .WithMany("Games")
+                        .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("Tournament.Core.Entities.Tournament", b =>
+                {
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

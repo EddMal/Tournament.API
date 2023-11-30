@@ -25,14 +25,15 @@ namespace Tournament.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Core.Entities.Tournament>>> GetTournament()
         {
-            return await _context.Tournament.ToListAsync();
+            var TTest = await _context.Tournaments.ToListAsync();
+            return await _context.Tournaments.ToListAsync();
         }
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Core.Entities.Tournament>> GetTournament(Guid id)
         {
-            var tournament = await _context.Tournament.FindAsync(id);
+            var tournament = await _context.Tournaments.FindAsync(id);
 
             if (tournament == null)
             {
@@ -78,7 +79,7 @@ namespace Tournament.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Core.Entities.Tournament>> PostTournament(Core.Entities.Tournament tournament)
         {
-            _context.Tournament.Add(tournament);
+            _context.Tournaments.Add(tournament);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
@@ -88,13 +89,13 @@ namespace Tournament.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament(Guid id)
         {
-            var tournament = await _context.Tournament.FindAsync(id);
+            var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null)
             {
                 return NotFound();
             }
 
-            _context.Tournament.Remove(tournament);
+            _context.Tournaments.Remove(tournament);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +103,7 @@ namespace Tournament.API.Controllers
 
         private bool TournamentExists(Guid id)
         {
-            return _context.Tournament.Any(e => e.Id == id);
+            return _context.Tournaments.Any(e => e.Id == id);
         }
     }
 }

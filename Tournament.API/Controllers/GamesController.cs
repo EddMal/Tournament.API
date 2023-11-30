@@ -25,14 +25,16 @@ namespace Tournament.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGame()
         {
-            return await _context.Game.ToListAsync();
+            var GTest = await _context.Games.ToListAsync();
+            return GTest;
+            //return await _context.Game.ToListAsync();
         }
 
         // GET: api/Games/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(Guid id)
         {
-            var game = await _context.Game.FindAsync(id);
+            var game = await _context.Games.FindAsync(id);
 
             if (game == null)
             {
@@ -78,7 +80,7 @@ namespace Tournament.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(Game game)
         {
-            _context.Game.Add(game);
+            _context.Games.Add(game);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
@@ -88,13 +90,13 @@ namespace Tournament.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(Guid id)
         {
-            var game = await _context.Game.FindAsync(id);
+            var game = await _context.Games.FindAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
 
-            _context.Game.Remove(game);
+            _context.Games.Remove(game);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +104,7 @@ namespace Tournament.API.Controllers
 
         private bool GameExists(Guid id)
         {
-            return _context.Game.Any(e => e.Id == id);
+            return _context.Games.Any(e => e.Id == id);
         }
     }
 }

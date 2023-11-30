@@ -35,12 +35,12 @@ namespace Tournament.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TournamentId1")
+                    b.Property<Guid>("TournamentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TournamentId1");
+                    b.HasIndex("TournamentId");
 
                     b.ToTable("Games", (string)null);
                 });
@@ -65,12 +65,17 @@ namespace Tournament.Data.Migrations
             modelBuilder.Entity("Tournament.Core.Entities.Game", b =>
                 {
                     b.HasOne("Tournament.Core.Entities.Tournament", "Tournament")
-                        .WithMany()
-                        .HasForeignKey("TournamentId1")
+                        .WithMany("Games")
+                        .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("Tournament.Core.Entities.Tournament", b =>
+                {
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

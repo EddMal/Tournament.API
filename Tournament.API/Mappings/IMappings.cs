@@ -11,5 +11,9 @@ namespace Tournament.API.Mappings
         public TournamentDTOUpdate TournamentToTournamentDTOUpdate(Tournament.Core.Entities.Tournament tournament);
 
         public Tournament.Core.Entities.Tournament TournamentDTOUpdateToTornament(Tournament.Core.Entities.Tournament tournament, TournamentDTOUpdate tournamentDTOUpdate);
+
+        public IEnumerable<TournamentDTO> TournamentsToTournamentDTOs(IEnumerable<Tournament.Core.Entities.Tournament> tournaments);
+
+
     }
 }

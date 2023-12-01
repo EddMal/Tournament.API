@@ -49,6 +49,26 @@ namespace Tournament.API.Mappings
             return tournament;
 
         }
+
+        public IEnumerable<TournamentDTO> TournamentsToTournamentDTOs(IEnumerable<Tournament.Core.Entities.Tournament> tournaments)
+        {
+            //if (tournament == null)return BadRequest();
+
+            List<TournamentDTO> TournamentDTOs = new List<TournamentDTO>();
+
+            foreach (var tournament in tournaments)
+            {
+                TournamentDTO tournamentDTO = new TournamentDTO()
+                {
+                    Title = tournament.Title,
+                    StartDate = tournament.StartDate,
+                };
+                TournamentDTOs.Add(tournamentDTO);
+            }
+
+            return (TournamentDTOs);
+
+        }
     }
 
 }

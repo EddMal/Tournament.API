@@ -34,26 +34,16 @@ namespace Tournament.API.Controllers
         public async Task<ActionResult<IEnumerable<Core.Entities.Tournament>>> GetTournament()
         {
 
-            var tournaments  = await _context.Tournaments.ToListAsync();
+            var tournaments  = await _tournamentRepository.GetAllAsync();
 
-            if (tournaments.Count == 0)
+            if (tournaments == null)
             { 
                 return NotFound();
             }
 
-            List<TournamentDTO> TournamentDTOs = new List<TournamentDTO>();
+            var tournamentDTOs = _mappings.TournamentsToTournamentDTOs(tournaments);
 
-            foreach (var tournament in tournaments) 
-            {
-                TournamentDTO tournamentDTO = new TournamentDTO()
-                {
-                    Title = tournament.Title,
-                    StartDate = tournament.StartDate,
-                };
-                TournamentDTOs.Add(tournamentDTO);
-            }
-
-            return Ok(TournamentDTOs);
+            return Ok(tournamentDTOs);
 
         }
 

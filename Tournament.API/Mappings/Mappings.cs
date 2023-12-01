@@ -3,10 +3,10 @@ using Tournament.Core.Entities;
 
 namespace Tournament.API.Mappings
 {
-    public class Mappings
+    public class Mappings:IMappings
     {
         //-----------EXTRACT INTERFACE-----------
-        public static TournamentDTO TournamentToTournamentDTO(Tournament.Core.Entities.Tournament tournament)
+        public  TournamentDTO TournamentToTournamentDTO(Tournament.Core.Entities.Tournament tournament)
         {
             //if (tournament == null)return BadRequest();
             return new TournamentDTO()
@@ -17,7 +17,7 @@ namespace Tournament.API.Mappings
 
         }
 
-        public static Tournament.Core.Entities.Tournament TournamentDTOToTournament(TournamentDTO tournamentDTO)
+        public  Tournament.Core.Entities.Tournament TournamentDTOToTournament(TournamentDTO tournamentDTO)
         {
             //if (tournament == null)return BadRequest();
             return new Tournament.Core.Entities.Tournament()
@@ -28,7 +28,7 @@ namespace Tournament.API.Mappings
 
         }
 
-        public static TournamentDTOUpdate TournamentToTournamentDTOUpdate(Tournament.Core.Entities.Tournament tournament)
+        public  TournamentDTOUpdate TournamentToTournamentDTOUpdate(Tournament.Core.Entities.Tournament tournament)
         {
             //if (tournament == null)return BadRequest();
             return new TournamentDTOUpdate()
@@ -40,7 +40,7 @@ namespace Tournament.API.Mappings
 
         }
 
-        public static Tournament.Core.Entities.Tournament TournamentDTOUpdateToTornament(Tournament.Core.Entities.Tournament tournament, TournamentDTOUpdate tournamentDTOUpdate)
+        public  Tournament.Core.Entities.Tournament TournamentDTOUpdateToTornament(Tournament.Core.Entities.Tournament tournament, TournamentDTOUpdate tournamentDTOUpdate)
         {
             //if (tournament == null)return BadRequest();
             tournament.Title = tournamentDTOUpdate.Title;
@@ -50,4 +50,5 @@ namespace Tournament.API.Mappings
 
         }
     }
+
 }

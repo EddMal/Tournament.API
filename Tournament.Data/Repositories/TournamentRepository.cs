@@ -13,7 +13,6 @@ namespace Tournament.Data.Repositories
     public class TournamentRepository : ITournamentRepository
     {
         private readonly TournamentAPIContext _context;
-
         public TournamentRepository(TournamentAPIContext context)
         {
             _context = context;
@@ -30,55 +29,38 @@ namespace Tournament.Data.Repositories
             return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
 
-        public async Task<IEnumerable<TournamentDTO>> GetAllAsync()
+        public async Task<IEnumerable<Core.Entities.Tournament>> GetAllAsync()
         {
             var tournaments = await _context.Tournaments.ToListAsync();
 
-            if (tournaments.Count == 0)
-            {
-                return new List<TournamentDTO>();
-            }
+            //if (tournaments.Count == 0)
+            //{
+            //    return new List<TournamentDTO>();
+            //}
 
-            List<TournamentDTO> TournamentDTOs = new List<TournamentDTO>();
-
-            foreach (var tournament in tournaments)
-            {
-                // change when made to a service :Tournament.API.Mappings.Mappings.TournamentToTournamentDTO(tournament);
-                TournamentDTO tournamentDTO = new TournamentDTO()
-                {
-                    Title = tournament.Title,
-                    StartDate = tournament.StartDate,
-                };
-                TournamentDTOs.Add(tournamentDTO);
-            }
-
-            return TournamentDTOs;
+            return tournaments;
         }
 
-        public async Task<TournamentDTO> GetAsync(Guid id)
+        public async Task<Core.Entities.Tournament> GetAsync(Guid id)
         {
             Core.Entities.Tournament? tournament = await _context.Tournaments.FirstOrDefaultAsync(t => t.Id == id);
-            if (tournament == null)
-            {
-                //MESSAGE??
-                return new TournamentDTO();
-            }
-
-
-            //TournamentDTO tournamentDTO = Tournament.API.Mappings.Mappings.TournamentToTournamentDTO(tournament);
-            //return Tournament.API.Mappings.Mappings.TournamentToTournamentDTO(tournament);
-            return new TournamentDTO();
+            //if (tournament == null)
+            //{
+            //    //MESSAGE??
+            //    return new tournament;
+            //}
+            return tournament!;
 
         }
 
         public void Remove(Core.Entities.Tournament tournament)
         {
-            throw new NotImplementedException();
+            _context.Tournaments.Remove(tournament);
         }
 
         public void Update(Core.Entities.Tournament tournament)
         {
-            throw new NotImplementedException();
+            _context.Entry(tournament).State = EntityState.Modified;
         }
     }
 }

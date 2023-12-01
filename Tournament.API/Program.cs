@@ -4,6 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Tournament.API.Data.Data;
 using Tournament.API.Extensions;
+using Tournament.API.Mappings;
 using Tournament.API.Services;
 using Tournament.Core.DTO.SeedDTO;
 using static Tournament.Core.DTO.SeedDTO.SeedDTO;
@@ -32,6 +33,8 @@ namespace Tournament.API
             builder.Services.AddSingleton<SeedData>(seedConfig.GetSection("SeedData").Get<SeedData>()!);
             builder.Services.Configure<SeedData>(seedConfig.GetSection("SeedData").Bind);
 
+            builder.Services.AddScoped<IMappings,Mappings.Mappings>();
+            builder.Services.AddScoped<Tournament.Core.Repositories.ITournamentRepository, Tournament.Data.Repositories.TournamentRepository>();
 
             builder.Services.AddScoped<ISeedService, SeedService>();
 

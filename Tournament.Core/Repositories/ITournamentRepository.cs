@@ -9,8 +9,8 @@ namespace Tournament.Core.Repositories
 {
     public interface ITournamentRepository
     {
-        Task<IEnumerable<Tournament.Core.DTO.TournamentDTO.TournamentDTO>> GetAllAsync();
-        Task<TournamentDTO> GetAsync(Guid id);
+        Task<IEnumerable<Tournament.Core.Entities.Tournament>> GetAllAsync();
+        Task<Tournament.Core.Entities.Tournament> GetAsync(Guid id);
         Task<bool> AnyAsync(Guid id);
         void Add(Tournament.Core.Entities.Tournament tournament);
         void Update(Tournament.Core.Entities.Tournament tournament);

@@ -25,9 +25,8 @@ namespace Tournament.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGame()
         {
-            var GTest = await _context.Games.ToListAsync();
-            return GTest;
-            //return await _context.Game.ToListAsync();
+
+            return await _context.Games.ToListAsync();
         }
 
         // GET: api/Games/5

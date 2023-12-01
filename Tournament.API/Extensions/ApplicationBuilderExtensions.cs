@@ -68,7 +68,7 @@ namespace Tournament.API.Extensions
                 await context.AddAsync(tournamentToContext);
                 //await context.SaveChangesAsync();
 
-                var gameToContext = await GenerateGames(seedData, context, i, tournamentToContext);
+                var gameToContext = GenerateGames(seedData, context, i, tournamentToContext);
 
                 tournamentToContext.Games.Add(gameToContext); 
 
@@ -80,7 +80,7 @@ namespace Tournament.API.Extensions
             await context.SaveChangesAsync();
         }
         //Remove context parameter.
-        private static async Task<Game> GenerateGames(SeedData seedData, TournamentAPIContext context,int i, Tournament.Core.Entities.Tournament tournament)
+        private static Game GenerateGames(SeedData seedData, TournamentAPIContext context,int i, Tournament.Core.Entities.Tournament tournament)
         {
 
                 var gameToContext = new Tournament.Core.Entities.Game()

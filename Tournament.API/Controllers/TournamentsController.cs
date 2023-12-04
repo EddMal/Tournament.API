@@ -31,7 +31,7 @@ namespace Tournament.API.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Core.Entities.Tournament>>> GetTournament()
+        public async Task<ActionResult<IEnumerable<Core.DTO.TournamentDTO.TournamentDTO>>> GetTournament()
         {
 
             var tournaments  = await _tournamentRepository.GetAllAsync();
@@ -49,13 +49,13 @@ namespace Tournament.API.Controllers
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Core.Entities.Tournament>> GetTournament(Guid id)
+        public async Task<ActionResult<Core.DTO.TournamentDTO.TournamentDTO>> GetTournament(Guid id)
         {
             Core.Entities.Tournament? tournament = await _tournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 //MESSAGE??
-                return BadRequest($"The tournament with ID: {id} is not found.");
+                return BadRequest();// $"The tournament with ID: {id} is not found.");
             }
 
             TournamentDTO tournamentDTO = _mappings.TournamentToTournamentDTO(tournament);
@@ -66,9 +66,9 @@ namespace Tournament.API.Controllers
         // PUT: api/Tournaments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournament(Guid id, TournamentDTOUpdate tournamentDTOUopdate)
+        public async Task<IActionResult> PutTournament(Guid id, TournamentDTOUpdate tournamentDTOUpdate)
         {
-            if (id != tournamentDTOUopdate.Id)
+            if (id != tournamentDTOUpdate.Id)
             {
                 return BadRequest();
             }
@@ -77,10 +77,10 @@ namespace Tournament.API.Controllers
 
             if (tournamentForModification == null) return NotFound();
 
-            tournamentForModification = _mappings.TournamentDTOUpdateToTornament(tournamentForModification, tournamentDTOUopdate);
+            tournamentForModification = _mappings.TournamentDTOUpdateToTornament(tournamentForModification, tournamentDTOUpdate);
 
             //Alternative?
-            _context.Entry(tournamentForModification).State = EntityState.Modified;
+            _tournamentRepository.Update(tournamentForModification);
 
             await _context.SaveChangesAsync();
 
@@ -90,15 +90,13 @@ namespace Tournament.API.Controllers
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Core.Entities.Tournament>> PostTournament(Core.DTO.TournamentDTO.TournamentDTO tournamentPost)
+        public async Task<ActionResult<Core.DTO.TournamentDTO.TournamentDTO>> PostTournament(Core.DTO.TournamentDTO.TournamentDTO tournamentPost)
         {
             if (tournamentPost == null)
             { 
             return BadRequest();
             }
-            //--------------------------
-            //--A-D-D -C-O-N-T-R-O-L- --
-            //--------------------------
+
             var tournament = _mappings.TournamentDTOToTournament(tournamentPost);
             _tournamentRepository.Add(tournament);
             await _context.SaveChangesAsync();

@@ -11,14 +11,14 @@ namespace Tournament.Core.DTO.GameDTO
     {
         // Update attribute.
         [Required]
-        public string Title { get; set; } = string.Empty;
+        public string? Title { get; set; }
 
         // Update attribute.
         [Required]
         public DateTime Time { get; set; }
 
         //Foreign key
-        public Guid TournamentId;
+        public Guid TournamentId { get; set; }
 
     }
 }

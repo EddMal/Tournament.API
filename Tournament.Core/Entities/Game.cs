@@ -26,7 +26,7 @@ namespace Tournament.Core.Entities
         public Guid TournamentId { get; set; }
 
         //Navigation property
-        public Tournament Tournament { get; set; } //= new Tournament();
+        public Tournament? Tournament { get; set; } //= new Tournament();
 
     }
  

@@ -35,6 +35,7 @@ namespace Tournament.API
 
             builder.Services.AddScoped<IMappings,Mappings.Mappings>();
             builder.Services.AddScoped<Tournament.Core.Repositories.ITournamentRepository, Tournament.Data.Repositories.TournamentRepository>();
+            builder.Services.AddScoped<Tournament.Core.Repositories.IGameRepository, Tournament.Data.Repositories.GameRepository>();
 
             builder.Services.AddScoped<ISeedService, SeedService>();
 

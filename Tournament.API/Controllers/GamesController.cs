@@ -6,80 +6,110 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament.API.Data.Data;
+using Tournament.API.Mappings;
+using Tournament.Core.DTO.GameDTO;
+using Tournament.Core.DTO.TournamentDTO;
 using Tournament.Core.Entities;
+using Tournament.Core.Repositories;
+using Tournament.Data.Repositories;
 
 namespace Tournament.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Games")]
     [ApiController]
     public class GamesController : ControllerBase
     {
         private readonly TournamentAPIContext _context;
+        private readonly IMappings _mappings;
+        private readonly Tournament.Core.Repositories.IGameRepository _gameRepository;
 
-        public GamesController(TournamentAPIContext context)
+        public GamesController(TournamentAPIContext context, IMappings mappings, Tournament.Core.Repositories.IGameRepository gameRepository)
         {
             _context = context;
+            _mappings = mappings;
+            _gameRepository = gameRepository;
         }
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
+        public async Task<ActionResult<IEnumerable<Core.DTO.GameDTO.GameDTO>>> GetGame()
         {
 
-            return await _context.Games.ToListAsync();
-        }
-
-        // GET: api/Games/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(Guid id)
-        {
-            var game = await _context.Games.FindAsync(id);
+            var game = await _gameRepository.GetAllAsync();
 
             if (game == null)
             {
                 return NotFound();
             }
 
-            return game;
+            var gameDTOs = _mappings.GamesToGameDTOs(game);
+
+            return Ok(gameDTOs);
+        }
+
+        // GET: api/Games/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Core.DTO.GameDTO.GameDTO>> GetGame(Guid id)
+        {
+            Core.Entities.Game? game = await _gameRepository.GetAsync(id);
+            if (game == null)
+            {
+                return BadRequest();//$"The tournament with ID: {id} is not found.");
+            }
+
+            GameDTO gameDTO = _mappings.GameToGameDTO(game);
+
+            return Ok(gameDTO);
         }
 
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(Guid id, Game game)
+        public async Task<IActionResult> PutGame(Guid id, GameDTOUpdate gameDTOUpdate)
         {
-            if (id != game.Id)
+           //Optmizations? (PutGame)  
+            if (id != gameDTOUpdate.Id)
             {
                 return BadRequest();
             }
+            //----------------------------------------
+            //--C-O-N-T-R-O-L- -M-O-D-E-L-S-T-A-T-E --
+            //----------------------------------------
 
-            _context.Entry(game).State = EntityState.Modified;
+            var gameForModification = await _gameRepository.GetAsync(id);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GameExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            if (gameForModification == null) return NotFound();
 
-            return NoContent();
+            gameForModification = _mappings.GameDTOUpdateToGame(gameForModification, gameDTOUpdate);
+
+            //Alternative?
+            _gameRepository.Update(gameForModification);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();//$"Game {gameForModification.Title} Updated"
         }
 
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game game)
+        public async Task<ActionResult<Core.DTO.GameDTO.GameDTO>> PostGame(Core.DTO.GameDTO.GameDTO gamePost)
         {
-            _context.Games.Add(game);
+            //------------------------------------------------------------------
+            //--A-D-D -L-O-G-I-C- -H-A-N-D-L-I-N-G- -T-O-U-R-N-a_M-E-N-T-I-D- --
+            //------------------------------------------------------------------
+            //Description:
+            //Empty TournamentID should be ok.
+            //:Additional changes:
+            //Tournament should display games and game should display tournament name.
+            //--E-N-D-----------------------------------------------------------
+            if (gamePost == null)
+            {
+                return BadRequest();
+            }
+
+            var game = _mappings.GameDTOToGame(gamePost);
+            _gameRepository.Add(game);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
@@ -89,21 +119,17 @@ namespace Tournament.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(Guid id)
         {
-            var game = await _context.Games.FindAsync(id);
+            var game = await _gameRepository.GetAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
 
-            _context.Games.Remove(game);
+            _gameRepository.Remove(game);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool GameExists(Guid id)
-        {
-            return _context.Games.Any(e => e.Id == id);
-        }
     }
 }

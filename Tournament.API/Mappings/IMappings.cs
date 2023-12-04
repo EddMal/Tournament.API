@@ -1,4 +1,5 @@
-﻿using Tournament.Core.DTO.TournamentDTO;
+﻿using Tournament.Core.DTO.GameDTO;
+using Tournament.Core.DTO.TournamentDTO;
 
 namespace Tournament.API.Mappings
 {
@@ -14,6 +15,14 @@ namespace Tournament.API.Mappings
 
         public IEnumerable<TournamentDTO> TournamentsToTournamentDTOs(IEnumerable<Tournament.Core.Entities.Tournament> tournaments);
 
+        public GameDTO GameToGameDTO(Tournament.Core.Entities.Game game);
 
+        public Tournament.Core.Entities.Game GameDTOToGame(GameDTO gameDTO);
+
+        public GameDTOUpdate GameToGameDTOUpdate(Tournament.Core.Entities.Game game);
+
+        public Tournament.Core.Entities.Game GameDTOUpdateToGame(Tournament.Core.Entities.Game game, GameDTOUpdate gameDTOUpdate);
+
+        public IEnumerable<GameDTO> GamesToGameDTOs(IEnumerable<Tournament.Core.Entities.Game> games);
     }
 }

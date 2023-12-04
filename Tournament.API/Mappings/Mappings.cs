@@ -1,5 +1,7 @@
-﻿using Tournament.Core.DTO.TournamentDTO;
+﻿using Tournament.Core.DTO.GameDTO;
+using Tournament.Core.DTO.TournamentDTO;
 using Tournament.Core.Entities;
+using static Tournament.Core.DTO.SeedDTO.SeedDTO;
 
 namespace Tournament.API.Mappings
 {
@@ -54,7 +56,7 @@ namespace Tournament.API.Mappings
         {
             //if (tournament == null)return BadRequest();
 
-            List<TournamentDTO> TournamentDTOs = new List<TournamentDTO>();
+            List<TournamentDTO> tournamentDTOs = new List<TournamentDTO>();
 
             foreach (var tournament in tournaments)
             {
@@ -63,12 +65,84 @@ namespace Tournament.API.Mappings
                     Title = tournament.Title,
                     StartDate = tournament.StartDate,
                 };
-                TournamentDTOs.Add(tournamentDTO);
+                tournamentDTOs.Add(tournamentDTO);
             }
 
-            return (TournamentDTOs);
+            return (tournamentDTOs);
 
         }
+
+        //GAMES
+
+        public GameDTO GameToGameDTO(Tournament.Core.Entities.Game game)
+        {
+            //if (tournament == null)return BadRequest();
+            return new GameDTO()
+            {
+                Title = game.Title,
+                Time = game.Time,
+                TournamentId = game.TournamentId
+            };
+
+        }
+
+        public Tournament.Core.Entities.Game GameDTOToGame(GameDTO gameDTO)
+        {
+            //if (tournament == null)return BadRequest();
+            return new Tournament.Core.Entities.Game()
+            {
+                Title = gameDTO.Title,
+                TournamentId = gameDTO.TournamentId,
+                Time = gameDTO.Time
+            };
+
+        }
+
+        public GameDTOUpdate GameToGameDTOUpdate(Tournament.Core.Entities.Game game)
+        {
+            //if (tournament == null)return BadRequest();
+            return new GameDTOUpdate()
+            {
+                Title = game.Title,
+                Time = game.Time,
+                TournamentId = game.TournamentId,
+                Id = game.Id
+            };
+
+        }
+
+        public Tournament.Core.Entities.Game GameDTOUpdateToGame(Tournament.Core.Entities.Game game, GameDTOUpdate gameDTOUpdate)
+        {
+            //if (tournament == null)return BadRequest();
+            game.Title = gameDTOUpdate.Title;
+            game.Time = gameDTOUpdate.Time;
+            game.TournamentId = gameDTOUpdate.TournamentId;
+
+            return game;
+
+        }
+
+        public IEnumerable<GameDTO> GamesToGameDTOs(IEnumerable<Tournament.Core.Entities.Game> games)
+        {
+            //if (tournament == null)return BadRequest();
+
+            List<GameDTO> gameDTOs = new List<GameDTO>();
+
+            foreach (var game in games)
+            {
+                GameDTO gameDTO = new GameDTO()
+                {
+                    Title = game.Title,
+                    Time = game.Time,
+                    TournamentId = game.TournamentId,
+                };
+                gameDTOs.Add(gameDTO);
+            }
+
+            return (gameDTOs);
+
+        }
+
     }
 
 }

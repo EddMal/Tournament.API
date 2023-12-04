@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,13 +10,13 @@ namespace Tournament.Core.DTO.TournamentDTO
 {
     public class TournamentDTO
     {
-        // Add attribute.
+        // Update attribute.
+        [Required]
         public string? Title { get; set; }
 
-        // Add attribute.
+        // Update attribute.
+        [Required]
         public DateTime StartDate { get; set; }
 
-        //// Add attribute
-        //public Game Game { get; set; }
     }
 }

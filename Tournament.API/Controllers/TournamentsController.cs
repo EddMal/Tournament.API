@@ -51,7 +51,7 @@ namespace Tournament.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Core.Entities.Tournament>> GetTournament(Guid id)
         {
-            Core.Entities.Tournament? tournament = await _context.Tournaments.FirstOrDefaultAsync(t => t.Id == id);
+            Core.Entities.Tournament? tournament = await _tournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 //MESSAGE??
@@ -73,7 +73,7 @@ namespace Tournament.API.Controllers
                 return BadRequest();
             }
 
-            var tournamentForModification = await _context.Tournaments.FirstOrDefaultAsync(t=> t.Id == id);
+            var tournamentForModification = await _tournamentRepository.GetAsync(id);
 
             if (tournamentForModification == null) return NotFound();
 
@@ -92,8 +92,15 @@ namespace Tournament.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Core.Entities.Tournament>> PostTournament(Core.DTO.TournamentDTO.TournamentDTO tournamentPost)
         {
+            if (tournamentPost == null)
+            { 
+            return BadRequest();
+            }
+            //--------------------------
+            //--A-D-D -C-O-N-T-R-O-L- --
+            //--------------------------
             var tournament = _mappings.TournamentDTOToTournament(tournamentPost);
-            _context.Tournaments.Add(tournament);
+            _tournamentRepository.Add(tournament);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);

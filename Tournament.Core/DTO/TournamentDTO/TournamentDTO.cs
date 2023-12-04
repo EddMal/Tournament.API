@@ -18,5 +18,7 @@ namespace Tournament.Core.DTO.TournamentDTO
         [Required]
         public DateTime StartDate { get; set; }
 
+        public DateTime EndDate => StartDate.AddMonths(3);
+
     }
 }

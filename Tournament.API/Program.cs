@@ -7,6 +7,7 @@ using Tournament.API.Extensions;
 using Tournament.API.Mappings;
 using Tournament.API.Services;
 using Tournament.Core.DTO.SeedDTO;
+using Tournament.Core.Repositories;
 using static Tournament.Core.DTO.SeedDTO.SeedDTO;
 
 namespace Tournament.API
@@ -36,6 +37,7 @@ namespace Tournament.API
             builder.Services.AddScoped<IMappings,Mappings.Mappings>();
             builder.Services.AddScoped<Tournament.Core.Repositories.ITournamentRepository, Tournament.Data.Repositories.TournamentRepository>();
             builder.Services.AddScoped<Tournament.Core.Repositories.IGameRepository, Tournament.Data.Repositories.GameRepository>();
+            builder.Services.AddScoped<IUOW, UOW>();
 
             builder.Services.AddScoped<ISeedService, SeedService>();
 

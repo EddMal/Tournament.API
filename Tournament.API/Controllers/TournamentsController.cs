@@ -10,6 +10,7 @@ using Tournament.API.Data.Data;
 using Tournament.API.Mappings;
 using Tournament.Core.DTO.TournamentDTO;
 using Tournament.Core.Entities;
+using Tournament.Core.Repositories;
 using static Tournament.Core.DTO.SeedDTO.SeedDTO;
 
 namespace Tournament.API.Controllers
@@ -18,15 +19,13 @@ namespace Tournament.API.Controllers
     [ApiController]
     public class TournamentsController : ControllerBase
     {
-        private readonly TournamentAPIContext _context;
         private readonly IMappings _mappings;
-        private readonly Tournament.Core.Repositories.ITournamentRepository _tournamentRepository;
+        private readonly IUOW _UOW;
 
-        public TournamentsController(TournamentAPIContext context, IMappings mappings, Tournament.Core.Repositories.ITournamentRepository tournamentRepository)
+        public TournamentsController( IMappings mappings, IUOW OUW)
         {
-            _context = context;
             _mappings = mappings;
-            _tournamentRepository = tournamentRepository;
+            _UOW = OUW;
         }
 
         // GET: api/Tournaments
@@ -34,7 +33,7 @@ namespace Tournament.API.Controllers
         public async Task<ActionResult<IEnumerable<Core.DTO.TournamentDTO.TournamentDTO>>> GetTournament()
         {
 
-            var tournaments  = await _tournamentRepository.GetAllAsync();
+            var tournaments  = await _UOW.TournamentRepository.GetAllAsync();
 
             if (tournaments == null)
             { 
@@ -51,7 +50,7 @@ namespace Tournament.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Core.DTO.TournamentDTO.TournamentDTO>> GetTournament(Guid id)
         {
-            Core.Entities.Tournament? tournament = await _tournamentRepository.GetAsync(id);
+            Core.Entities.Tournament? tournament = await _UOW.TournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 //MESSAGE??
@@ -73,16 +72,16 @@ namespace Tournament.API.Controllers
                 return BadRequest();
             }
 
-            var tournamentForModification = await _tournamentRepository.GetAsync(id);
+            var tournamentForModification = await _UOW.TournamentRepository.GetAsync(id);
 
             if (tournamentForModification == null) return NotFound();
 
             tournamentForModification = _mappings.TournamentDTOUpdateToTornament(tournamentForModification, tournamentDTOUpdate);
 
             //Alternative?
-            _tournamentRepository.Update(tournamentForModification);
+            _UOW.TournamentRepository.Update(tournamentForModification);
 
-            await _context.SaveChangesAsync();
+            await _UOW.CompleteAsync();
 
              return NoContent();//$"Tournament {tournamentForModification.Title} Updated"
         }
@@ -98,8 +97,8 @@ namespace Tournament.API.Controllers
             }
 
             var tournament = _mappings.TournamentDTOToTournament(tournamentPost);
-            _tournamentRepository.Add(tournament);
-            await _context.SaveChangesAsync();
+            _UOW.TournamentRepository.Add(tournament);
+            await _UOW.CompleteAsync();
 
             return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
         }
@@ -111,14 +110,14 @@ namespace Tournament.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament(Guid id)
         {
-            var tournament = await _tournamentRepository.GetAsync(id);
+            var tournament = await _UOW.TournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 return NotFound();
             }
 
-            _tournamentRepository.Remove(tournament);
-            await _context.SaveChangesAsync();
+            _UOW.TournamentRepository.Remove(tournament);
+            await _UOW.CompleteAsync();
 
             return NoContent();
         }

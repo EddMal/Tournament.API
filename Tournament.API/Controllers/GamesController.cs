@@ -19,15 +19,12 @@ namespace Tournament.API.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        private readonly TournamentAPIContext _context;
         private readonly IMappings _mappings;
-        private readonly Tournament.Core.Repositories.IGameRepository _gameRepository;
-
-        public GamesController(TournamentAPIContext context, IMappings mappings, Tournament.Core.Repositories.IGameRepository gameRepository)
+        private readonly IUOW _UOW;
+        public GamesController(IMappings mappings, IUOW UOW)
         {
-            _context = context;
             _mappings = mappings;
-            _gameRepository = gameRepository;
+            _UOW = UOW;
         }
 
         // GET: api/Games
@@ -35,7 +32,7 @@ namespace Tournament.API.Controllers
         public async Task<ActionResult<IEnumerable<Core.DTO.GameDTO.GameDTO>>> GetGame()
         {
 
-            var game = await _gameRepository.GetAllAsync();
+            var game = await _UOW.GameRepository.GetAllAsync();
 
             if (game == null)
             {
@@ -51,7 +48,7 @@ namespace Tournament.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Core.DTO.GameDTO.GameDTO>> GetGame(Guid id)
         {
-            Core.Entities.Game? game = await _gameRepository.GetAsync(id);
+            Core.Entities.Game? game = await _UOW.GameRepository.GetAsync(id);
             if (game == null)
             {
                 return BadRequest();//$"The tournament with ID: {id} is not found.");
@@ -76,16 +73,16 @@ namespace Tournament.API.Controllers
             //--C-O-N-T-R-O-L- -M-O-D-E-L-S-T-A-T-E --
             //----------------------------------------
 
-            var gameForModification = await _gameRepository.GetAsync(id);
+            var gameForModification = await _UOW.GameRepository.GetAsync(id);
 
             if (gameForModification == null) return NotFound();
 
             gameForModification = _mappings.GameDTOUpdateToGame(gameForModification, gameDTOUpdate);
 
             //Alternative?
-            _gameRepository.Update(gameForModification);
+            _UOW.GameRepository.Update(gameForModification);
 
-            await _context.SaveChangesAsync();
+            await _UOW.CompleteAsync();
 
             return NoContent();//$"Game {gameForModification.Title} Updated"
         }
@@ -109,8 +106,8 @@ namespace Tournament.API.Controllers
             }
 
             var game = _mappings.GameDTOToGame(gamePost);
-            _gameRepository.Add(game);
-            await _context.SaveChangesAsync();
+            _UOW.GameRepository.Add(game);
+            await _UOW.CompleteAsync();
 
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
         }
@@ -119,14 +116,14 @@ namespace Tournament.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(Guid id)
         {
-            var game = await _gameRepository.GetAsync(id);
+            var game = await _UOW.GameRepository.GetAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
 
-            _gameRepository.Remove(game);
-            await _context.SaveChangesAsync();
+            _UOW.GameRepository.Remove(game);
+            await _UOW.CompleteAsync();
 
             return NoContent();
         }

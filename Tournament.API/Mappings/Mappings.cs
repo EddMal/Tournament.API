@@ -1,4 +1,5 @@
-﻿using Tournament.Core.DTO.GameDTO;
+﻿using System.Collections.Generic;
+using Tournament.Core.DTO.GameDTO;
 using Tournament.Core.DTO.TournamentDTO;
 using Tournament.Core.Entities;
 using static Tournament.Core.DTO.SeedDTO.SeedDTO;
@@ -11,11 +12,20 @@ namespace Tournament.API.Mappings
         public  TournamentDTO TournamentToTournamentDTO(Tournament.Core.Entities.Tournament tournament)
         {
             //if (tournament == null)return BadRequest();
-            return new TournamentDTO()
-            {
+            
+                List < GameDTO > gamesDTOs = new List<GameDTO>();
+
+                //foreach (var game in tournament.Games)
+                //{
+                //    gamesDTOs.Add(GameToGameDTO(game));
+                //}
+                
+                return new TournamentDTO()
+                {
                 Title = tournament.Title,
-                StartDate = tournament.StartDate
-            };
+                StartDate = tournament.StartDate,
+                //Games = gamesDTOs
+                };
 
         }
 
@@ -57,15 +67,23 @@ namespace Tournament.API.Mappings
             //if (tournament == null)return BadRequest();
 
             List<TournamentDTO> tournamentDTOs = new List<TournamentDTO>();
-
+            
             foreach (var tournament in tournaments)
             {
+                List<GameDTO> gamesDTOs = new List<GameDTO>();
+                foreach (var game in tournament.Games)
+                {
+                    gamesDTOs.Add(GameToGameDTO(game));
+                }
+
                 TournamentDTO tournamentDTO = new TournamentDTO()
                 {
                     Title = tournament.Title,
                     StartDate = tournament.StartDate,
+                    Games = gamesDTOs,
                 };
-                tournamentDTOs.Add(tournamentDTO);
+               
+                    tournamentDTOs.Add(tournamentDTO);
             }
 
             return (tournamentDTOs);

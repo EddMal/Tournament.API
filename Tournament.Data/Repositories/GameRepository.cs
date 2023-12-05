@@ -52,6 +52,18 @@ namespace Tournament.Data.Repositories
 
         }
 
+        public async Task<Core.Entities.Game> GetAsync(string title)
+        {
+            Core.Entities.Game? game = await _context.Games.FirstOrDefaultAsync(t => t.Title == title);
+            //if (tournament == null)
+            //{
+            //    //MESSAGE??
+            //    return new tournament;
+            //}
+            return game!;
+
+        }
+
         public void Remove(Core.Entities.Game game)
         {
             _context.Games.Remove(game);

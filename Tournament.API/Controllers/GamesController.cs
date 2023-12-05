@@ -46,10 +46,26 @@ namespace Tournament.API.Controllers
         }
 
         // GET: api/Games/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Core.DTO.GameDTO.GameDTO>> GetGame(Guid id)
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Core.DTO.GameDTO.GameDTO>> GetGame(Guid id)
+        //{
+        //    Core.Entities.Game? game = await _UOW.GameRepository.GetAsync(id);
+        //    if (game == null)
+        //    {
+        //        return BadRequest();//$"The tournament with ID: {id} is not found.");
+        //    }
+
+        //    GameDTO gameDTO = _mappings.GameToGameDTO(game);
+
+        //    return Ok(gameDTO);
+        //}
+
+        // GET: api/Games/5
+        [HttpGet("{title}")]
+        public async Task<ActionResult<Core.DTO.GameDTO.GameDTO>> GetGame(string title)
         {
-            Core.Entities.Game? game = await _UOW.GameRepository.GetAsync(id);
+            Core.Entities.Game? game = await _UOW.GameRepository.GetAsync(title);
+
             if (game == null)
             {
                 return BadRequest();//$"The tournament with ID: {id} is not found.");

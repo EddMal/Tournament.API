@@ -29,16 +29,11 @@ namespace Tournament.Data.Repositories
             return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
 
-        public async Task<IEnumerable<Core.Entities.Tournament>> GetAllAsync()
+        public async Task<IEnumerable<Core.Entities.Tournament>> GetAllAsync(bool includeGames = false)
         {
-            var tournaments = await _context.Tournaments.ToListAsync();
+            return includeGames ? await _context.Tournaments.Include(t=>t.Games).ToListAsync()
+                                : await _context.Tournaments.ToListAsync();
 
-            //if (tournaments.Count == 0)
-            //{
-            //    return new List<TournamentDTO>();
-            //}
-
-            return tournaments;
         }
 
         public async Task<Core.Entities.Tournament> GetAsync(Guid id)

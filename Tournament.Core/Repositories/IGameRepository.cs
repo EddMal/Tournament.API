@@ -10,6 +10,7 @@ namespace Tournament.Core.Repositories
     {
         Task<IEnumerable<Tournament.Core.Entities.Game>> GetAllAsync();
         Task<Tournament.Core.Entities.Game> GetAsync(Guid id);
+        Task<Tournament.Core.Entities.Game> GetAsync(string title);
         Task<bool> AnyAsync(Guid id);
         void Add(Tournament.Core.Entities.Game tournament);
         void Update(Tournament.Core.Entities.Game tournament);

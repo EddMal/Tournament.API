@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament.API.Data.Data;
@@ -110,6 +111,33 @@ namespace Tournament.API.Controllers
             await _UOW.CompleteAsync();
 
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
+        }
+
+        //PATCH
+        [HttpPatch("{gameId}")]
+        public async Task<ActionResult<GameDTOUpdate>> PatchGame(Guid gameId, JsonPatchDocument<GameDTOUpdate> patchDocument)
+        {
+            var GamePatch = await _UOW.GameRepository.GetAsync(gameId);
+
+            if (GamePatch is null) return NotFound($"Game with id {gameId} was not found.");
+
+
+            //if (company.Id != empToPatch.CompanyId) return BadRequest();
+
+            var updatedGame = _mappings.GameToGameDTOUpdate(GamePatch);
+
+            patchDocument.ApplyTo(updatedGame, ModelState);
+
+            await TryUpdateModelAsync(updatedGame);
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            GamePatch = _mappings.GameDTOUpdateToGame(GamePatch, updatedGame);
+            _UOW.GameRepository.Update(GamePatch);
+            await _UOW.CompleteAsync();
+
+            return NoContent();
         }
 
         // DELETE: api/Games/5

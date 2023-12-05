@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure;
 using Humanizer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament.API.Data.Data;
@@ -22,7 +25,7 @@ namespace Tournament.API.Controllers
         private readonly IMappings _mappings;
         private readonly IUOW _UOW;
 
-        public TournamentsController( IMappings mappings, IUOW OUW)
+        public TournamentsController(IMappings mappings, IUOW OUW)
         {
             _mappings = mappings;
             _UOW = OUW;
@@ -33,10 +36,10 @@ namespace Tournament.API.Controllers
         public async Task<ActionResult<IEnumerable<Core.DTO.TournamentDTO.TournamentDTO>>> GetTournament()
         {
 
-            var tournaments  = await _UOW.TournamentRepository.GetAllAsync();
+            var tournaments = await _UOW.TournamentRepository.GetAllAsync();
 
             if (tournaments == null)
-            { 
+            {
                 return NotFound();
             }
 
@@ -83,7 +86,7 @@ namespace Tournament.API.Controllers
 
             await _UOW.CompleteAsync();
 
-             return NoContent();//$"Tournament {tournamentForModification.Title} Updated"
+            return NoContent();//$"Tournament {tournamentForModification.Title} Updated"
         }
 
         // POST: api/Tournaments
@@ -92,8 +95,8 @@ namespace Tournament.API.Controllers
         public async Task<ActionResult<Core.DTO.TournamentDTO.TournamentDTO>> PostTournament(Core.DTO.TournamentDTO.TournamentDTO tournamentPost)
         {
             if (tournamentPost == null)
-            { 
-            return BadRequest();
+            {
+                return BadRequest();
             }
 
             var tournament = _mappings.TournamentDTOToTournament(tournamentPost);
@@ -102,6 +105,34 @@ namespace Tournament.API.Controllers
 
             return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
         }
+
+        //PATCH
+        [HttpPatch("{tournamentId}")]
+        public async Task<ActionResult<TournamentDTOUpdate>> PatchTournament(Guid tournamentId, JsonPatchDocument<TournamentDTOUpdate> patchDocument) 
+        {
+            var tournamentPatch = await _UOW.TournamentRepository.GetAsync(tournamentId);
+
+            if (tournamentPatch is null) return NotFound($"Tournament with id {tournamentId} was not found.");
+
+
+            //if (company.Id != empToPatch.CompanyId) return BadRequest();
+            
+            var updatedTournament = _mappings.TournamentToTournamentDTOUpdate(tournamentPatch);
+
+            patchDocument.ApplyTo(updatedTournament, ModelState);
+
+            await TryUpdateModelAsync(updatedTournament);
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            tournamentPatch = _mappings.TournamentDTOUpdateToTornament(tournamentPatch, updatedTournament);
+            _UOW.TournamentRepository.Update(tournamentPatch);
+            await _UOW.CompleteAsync();
+
+            return NoContent();
+        }
+
         //-----------------------------
         //--N-O-T -O-P-T-I-M-I-Z-E-D --
         //-----------------------------
